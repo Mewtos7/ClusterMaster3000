@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /ClusterManager3000/Properties/launchSettings.json
 /src/Properties/launchSettings.json
+
+# Ignore local files
+*local.*
