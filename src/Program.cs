@@ -21,7 +21,7 @@ namespace ClusterManager3000
         {
             //Create new server database if not existent
             SqliteDatabase db = new SqliteDatabase();
-            db.CreateNewDatabaseIfNotExists("serverdb");
+            db.CreateNewDatabaseIfNotExists("server_database");
         }
     }
 }
