@@ -10,11 +10,12 @@ namespace ClusterManager3000.Helper
 {
     internal class HetznerServices
     {
-        private readonly string apiKey = Environment.GetEnvironmentVariable("APIKEY") ?? throw new ArgumentNullException("APIKEY not found");
         private readonly HttpClient httpClient = new HttpClient();
 
         public HetznerServices()
         {
+            var config = new AppConfiguration();
+            string apiKey = config.ApiKey;
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
         }
 
