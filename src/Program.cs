@@ -20,6 +20,8 @@ namespace ClusterManager3000
         private async Task OrchestrateServers()
         {
             HetznerServices hetznerServices = new HetznerServices();
+            var serverCreationMessage = await hetznerServices.CreateServer();
+            Console.WriteLine($"{serverCreationMessage}");
         }
     }
 }
