@@ -1,4 +1,4 @@
-# ClusterManager3000
+# ClusterMaster3000
 
 ## Introduction
 This project should provide an application in c# to create, manage and scale an lxd cluster as well as virtual machines running on created cluster.

@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace ClusterManager3000.Helper
+namespace ClusterMaster3000.Helper
 {
     internal class HetznerServices
     {

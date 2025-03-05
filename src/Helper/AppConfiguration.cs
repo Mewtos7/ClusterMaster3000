@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace ClusterManager3000.Helper
+namespace ClusterMaster3000.Helper
 {
     class AppConfiguration
     {
