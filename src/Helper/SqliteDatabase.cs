@@ -5,25 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 
-namespace ClusterManager3000.Helper
+namespace ClusterMaster3000.Helper
 {
     internal class SqliteDatabase
     {
-        public void CreateNewDatabaseIfNotExists(string databaseName)
+        public string CreateNewDatabaseStructureIfNotExists(string databaseName)
         {
-            if (!File.Exists(databaseName))
+
+            if (File.Exists(databaseName))
+            {
+                return "databaseAlreadyExists";
+            }
+            try
             {
                 string databasePath = $"Data Source={databaseName}";
-                try
-                {
-                    SQLiteConnection.CreateFile(databaseName);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Database could not be created, see {ex.Message}");
-                }
+                SQLiteConnection.CreateFile(databaseName);
 
+                using (var connection = new SQLiteConnection(databasePath))
+                {
+                    connection.Open();
+                    var command = connection.CreateCommand();
+                    command.CommandText = File.ReadAllText("queries/createNewServerTable.sql");
+                    command.ExecuteNonQuery();
+                }
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Database or table could not be created, see {ex.Message}");
+            }
+            return "success";
         }
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterManager3000", "src\ClusterManager3000.csproj", "{D55F173F-23EE-47AC-B02B-56B15DE87056}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterMaster3000", "src\ClusterMaster3000.csproj", "{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D55F173F-23EE-47AC-B02B-56B15DE87056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D55F173F-23EE-47AC-B02B-56B15DE87056}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D55F173F-23EE-47AC-B02B-56B15DE87056}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D55F173F-23EE-47AC-B02B-56B15DE87056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Buffers;
 using System.Text.Json;
-using ClusterManager3000.Helper;
+using ClusterMaster3000.Helper;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 
-namespace ClusterManager3000
+namespace ClusterMaster3000
 {
     public class Program
     {
@@ -19,9 +19,15 @@ namespace ClusterManager3000
 
         private async Task OrchestrateServers()
         {
+            //Create and Check database
+            SqliteDatabase sqliteDatabase = new SqliteDatabase();
+            var databaseCreationMessage = sqliteDatabase.CreateNewDatabaseStructureIfNotExists("clustermaster.db");
+            //Create Server
             HetznerServices hetznerServices = new HetznerServices();
             var serverCreationMessage = await hetznerServices.CreateServer();
-            Console.WriteLine($"{serverCreationMessage}");
+
+            
+
         }
     }
 }
