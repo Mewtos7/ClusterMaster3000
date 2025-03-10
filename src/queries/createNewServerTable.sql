@@ -1,1 +1,0 @@
-﻿CREATE Table clusterMember (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL, Public_ipv6 TEXT, Public_dns_ptr TEXT, Status TEXT, CreatedAt TEXT, UpdatedAt TEXT);

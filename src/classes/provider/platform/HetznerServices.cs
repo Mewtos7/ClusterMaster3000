@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using ClusterMaster3000.classes.helper;
 
-namespace ClusterMaster3000.Helper
+namespace ClusterMaster3000.classes.provider.platform
 {
     internal class HetznerServices
     {
@@ -28,26 +24,13 @@ namespace ClusterMaster3000.Helper
             return message;
         }
 
-        //TODO: Possible null-reference
-        public async Task<string> GetServerByname(string serverName)
-        {
-            var servers = GetServers().Result;
-            JObject jsonObject = JObject.Parse(servers);
-            var item = jsonObject["servers"].FirstOrDefault(i => i["name"].ToString() == serverName);
-            var serverId = item["id"].ToString();
-            return serverId;
-        }
-
         //TODO: make things variable for the server creation, like store server_type in config n stuff
-        
-        public async Task<string> CreateServer()
+        //TODO: handle exceptions
+        public async Task<string> CreateServer(string sshKey)
         {
             Random random = new Random();
+            var servername = "eva" + random.Next(0, 1000) + "-" + random.Next(0, 1000);
 
-            var servername = "eva" + config.Environment + random.Next(0, 1000);
-            var sshKey = await CreateSshKey();
-
-            if (sshKey == "failed") return "Failed Server Creation, SSHKey could not be created";
 
             using StringContent jsonContent = new(
                 JsonSerializer.Serialize(new
@@ -57,16 +40,19 @@ namespace ClusterMaster3000.Helper
                     server_type = "cx22",
                     ssh_keys = new[] { sshKey }
                 }),
-                System.Text.Encoding.UTF8,
+                Encoding.UTF8,
                 "application/json");
-
 
             using HttpResponseMessage
                 response = await httpClient.PostAsync("https://api.hetzner.cloud/v1/servers", jsonContent);
+            response.EnsureSuccessStatusCode();
 
-            var message = await response.Content.ReadAsStringAsync();
-            return message;
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            return jsonResponse;
         }
+
+
 
         public async Task DeleteServer(string id)
         {
@@ -81,14 +67,15 @@ namespace ClusterMaster3000.Helper
         public async Task<string> CreateSshKey()
         {
             var guid = Guid.NewGuid().ToString();
+            var sshKey = config.SshKey;
 
             using StringContent jsonContent = new(
                 JsonSerializer.Serialize(new
                 {
                     name = guid,
-                    public_key = config.SshKey
+                    public_key = sshKey
                 }),
-                System.Text.Encoding.UTF8,
+                Encoding.UTF8,
                 "application/json");
 
 
@@ -96,9 +83,9 @@ namespace ClusterMaster3000.Helper
                 response = await httpClient.PostAsync("https://api.hetzner.cloud/v1/ssh_keys", jsonContent);
 
             var message = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
 
-            if (response.IsSuccessStatusCode) return guid;
-            else return "failed";
+            return guid;
         }
 
     }

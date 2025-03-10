@@ -10,7 +10,6 @@
   <ItemGroup>
     <None Remove="appsettings.json" />
     <None Remove="local.appsettings.json" />
-    <None Remove="queries\createNewServerTable.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,9 +18,6 @@
     </Content>
     <Content Include="local.appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="queries\createNewServerTable.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
