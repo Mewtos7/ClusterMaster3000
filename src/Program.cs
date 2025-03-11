@@ -1,33 +1,34 @@
-﻿using System;
-using System.Buffers;
-using System.Text.Json;
-using ClusterMaster3000.Helper;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using static System.Net.Mime.MediaTypeNames;
+﻿using ClusterMaster3000.classes.helper;
+using ClusterMaster3000.classes.provider.database;
+using ClusterMaster3000.classes.provider.platform;
 
 
 namespace ClusterMaster3000
 {
     public class Program
     {
+        private readonly SqliteDatabase sqliteDatabase = new SqliteDatabase();
+        private readonly HetznerServices hetznerServices = new HetznerServices();
+
         static async Task Main(string[] args)
         {
             var p = new Program();
-            await p.OrchestrateServers();
+            p.InitializeClusterOrchestrator();
+            await p.CreateFirstServer();
+        }
+        private void InitializeClusterOrchestrator()
+        {
+            sqliteDatabase.CreateNewDatabaseIfNotExists();
+            sqliteDatabase.CreateNewClusterMemberServerTableIfNotExists();
         }
 
-        private async Task OrchestrateServers()
+        private async Task CreateFirstServer()
         {
-            //Create and Check database
-            SqliteDatabase sqliteDatabase = new SqliteDatabase();
-            var databaseCreationMessage = sqliteDatabase.CreateNewDatabaseStructureIfNotExists("clustermaster.db");
-            //Create Server
-            HetznerServices hetznerServices = new HetznerServices();
-            var serverCreationMessage = await hetznerServices.CreateServer();
-
-            
-
+            //Create server and save into database
+            var sshKey = await hetznerServices.CreateSshKey();
+            var createdServer = await hetznerServices.CreateServer(sshKey);
+            var clusterMemberServer = JsonMapping.MapCreateServerResponseToClusterMemberServer(createdServer);
+            sqliteDatabase.InsertNewClusterMemberServerRecord(clusterMemberServer);
         }
     }
 }

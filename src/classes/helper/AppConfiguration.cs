@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
-namespace ClusterMaster3000.Helper
+namespace ClusterMaster3000.classes.helper
 {
     class AppConfiguration
     {
         public string ApiKey { get; }
-        public string Environment {  get; }
+        public string Environment { get; }
         public string SshKey { get; }
 
         public AppConfiguration()
