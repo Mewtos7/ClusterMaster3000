@@ -9,12 +9,14 @@ namespace ClusterMaster3000
     {
         private readonly SqliteDatabase sqliteDatabase = new SqliteDatabase();
         private readonly HetznerServices hetznerServices = new HetznerServices();
+        private readonly Cryptography cryptography = new Cryptography();
+        private readonly JsonMapping jsonMapping = new JsonMapping();
 
         static async Task Main(string[] args)
         {
             var p = new Program();
             p.InitializeClusterOrchestrator();
-            await p.CreateFirstServer();
+            await p.CreateServer();
         }
         private void InitializeClusterOrchestrator()
         {
@@ -22,13 +24,19 @@ namespace ClusterMaster3000
             sqliteDatabase.CreateNewClusterMemberServerTableIfNotExists();
         }
 
-        private async Task CreateFirstServer()
+        private async Task CreateServer()
         {
             //Create server and save into database
-            var sshKey = await hetznerServices.CreateSshKey();
-            var createdServer = await hetznerServices.CreateServer(sshKey);
-            var clusterMemberServer = JsonMapping.MapCreateServerResponseToClusterMemberServer(createdServer);
-            sqliteDatabase.InsertNewClusterMemberServerRecord(clusterMemberServer);
+            var sshKeys = cryptography.GenerateSshKeyPair();
+            var sshKeyId = await hetznerServices.DepositPublicSshKey(sshKeys["public"]);
+            var createdServerResponse = await hetznerServices.CreateServer(sshKeyId);
+            var mappedClusterMemberServer = jsonMapping.MapServerFieldsToClusterMemberServer(createdServerResponse, sshKeys["private"]);
+            sqliteDatabase.InsertNewClusterMemberServerRecord(mappedClusterMemberServer);
+
+            //Clear sensitive data
+            mappedClusterMemberServer.SshPrivateKey = "";
+            sshKeys.Clear();
+
         }
     }
 }
