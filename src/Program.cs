@@ -11,6 +11,7 @@ namespace ClusterMaster3000
         private readonly HetznerServices hetznerServices = new HetznerServices();
         private readonly Cryptography cryptography = new Cryptography();
         private readonly JsonMapping jsonMapping = new JsonMapping();
+        private readonly AppConfiguration appConfiguration = new AppConfiguration(); //TODO: Not optimal here, what is with reloading config when appsetting changes?
 
         static async Task Main(string[] args)
         {
@@ -18,24 +19,33 @@ namespace ClusterMaster3000
             p.InitializeClusterOrchestrator();
             await p.CreateServer();
         }
+
         private void InitializeClusterOrchestrator()
         {
             sqliteDatabase.CreateNewDatabaseIfNotExists();
             sqliteDatabase.CreateNewClusterMemberServerTableIfNotExists();
+            sqliteDatabase.CreateNewSshKeyTableIfNotExists();
+            if (appConfiguration.EncryptionKey == null)
+            {
+                var encryptionKey = cryptography.CreateEncryptionKey();
+                var convertedEncryptionKey = Convert.ToBase64String(encryptionKey);
+                appConfiguration.AddConfigurationinJson("ENCRYPTIONKEY", convertedEncryptionKey);
+            }
         }
 
         private async Task CreateServer()
         {
-            //Create server and save into database
+            //Create ssh key and save to db
             var sshKeys = cryptography.GenerateSshKeyPair();
-            var sshKeyId = await hetznerServices.DepositPublicSshKey(sshKeys["public"]);
-            var createdServerResponse = await hetznerServices.CreateServer(sshKeyId);
-            var mappedClusterMemberServer = jsonMapping.MapServerFieldsToClusterMemberServer(createdServerResponse, sshKeys["private"]);
-            sqliteDatabase.InsertNewClusterMemberServerRecord(mappedClusterMemberServer);
+            await hetznerServices.CreatePublicSshKey(sshKeys);
+            sqliteDatabase.InsertNewSshKeyRecord(sshKeys);
+            
 
-            //Clear sensitive data
-            mappedClusterMemberServer.SshPrivateKey = "";
-            sshKeys.Clear();
+            //Create server and save to db
+            var createdServerResponse = await hetznerServices.CreateServer(sshKeys.KeyName);
+            var mappedClusterMemberServer = jsonMapping.MapServerFieldsToClusterMemberServer(createdServerResponse);
+            sqliteDatabase.InsertNewClusterMemberServerRecord(mappedClusterMemberServer);
+            sqliteDatabase.UpdateSshKeyRecord(sshKeys, mappedClusterMemberServer.ServerId);
 
         }
     }

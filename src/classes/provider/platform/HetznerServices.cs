@@ -29,7 +29,7 @@ namespace ClusterMaster3000.classes.provider.platform
 
         //TODO: make things variable for the server creation, like store server_type in config n stuff
         //TODO: handle exceptions
-        public async Task<string> CreateServer(string sshKey)
+        public async Task<string> CreateServer(string sshKeyName)
         {
             Random random = new Random();
             var servername = "eva" + random.Next(0, 1000) + "-" + random.Next(0, 1000);
@@ -41,7 +41,7 @@ namespace ClusterMaster3000.classes.provider.platform
                     image = "ubuntu-24.04",
                     name = servername,
                     server_type = "cx22",
-                    ssh_keys = new[] { sshKey }
+                    ssh_keys = new[] { sshKeyName }
                 }),
                 Encoding.UTF8,
                 "application/json");
@@ -55,8 +55,6 @@ namespace ClusterMaster3000.classes.provider.platform
             return jsonResponse;
         }
 
-
-
         public async Task DeleteServer(string id)
         {
 
@@ -66,15 +64,13 @@ namespace ClusterMaster3000.classes.provider.platform
             var message = await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> DepositPublicSshKey(string publicKey)
+        public async Task CreatePublicSshKey(Cryptography.SshKeyPair sshKeyPair)
         {
-            var guid = Guid.NewGuid().ToString();
-
             using StringContent jsonContent = new(
                 JsonSerializer.Serialize(new
                 {
-                    name = guid,
-                    public_key = publicKey
+                    name = sshKeyPair.KeyName,
+                    public_key = sshKeyPair.PublicKey
                 }),
                 Encoding.UTF8,
                 "application/json");
@@ -85,8 +81,6 @@ namespace ClusterMaster3000.classes.provider.platform
 
             var message = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
-
-            return guid;
         }
     }
 }
