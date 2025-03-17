@@ -1,9 +1,12 @@
 ﻿// Ignore Spelling: databaseprovider
 
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Security.Cryptography;
 using ClusterMaster3000.classes.helper;
 using ClusterMaster3000.classes.models;
+using Newtonsoft.Json.Linq;
+using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace ClusterMaster3000.classes.provider.database
 {
@@ -58,6 +61,7 @@ namespace ClusterMaster3000.classes.provider.database
                 command.CommandText =
                     $@"CREATE Table IF NOT EXISTS {sshKeyTable} (
 	                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Name TEXT,
 	                        ServerId TEXT, 
 	                        SshPrivateKey TEXT,
                             AesIv TEXT);";
@@ -74,11 +78,29 @@ namespace ClusterMaster3000.classes.provider.database
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText =
-                    $@"INSERT INTO {sshKeyTable} (SshPrivateKey,AesIv) 
-                        VALUES (@SshPrivateKey, @AesIv);";
+                    $@"INSERT INTO {sshKeyTable} (SshPrivateKey,AesIv, Name) 
+                        VALUES (@SshPrivateKey, @AesIv, @Name);";
 
                 command.Parameters.AddWithValue("@SshPrivateKey", keyPair.EncryptedPrivateKey);
                 command.Parameters.AddWithValue("@AesIv", keyPair.IV);
+                command.Parameters.AddWithValue("@Name", keyPair.KeyName);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void UpdateSshKeyRecord(Cryptography.SshKeyPair keyPair, string serverId)
+        {
+            string databasePath = $"Data Source={databaseName}";
+            using (var connection = new SQLiteConnection(databasePath))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText =
+                    $@"UPDATE {sshKeyTable} SET ServerId = {serverId} WHERE Name  = @KeyName;";
+
+                command.Parameters.AddWithValue("@KeyName", keyPair.KeyName);
 
                 command.ExecuteNonQuery();
                 connection.Close();

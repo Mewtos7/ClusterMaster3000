@@ -13,7 +13,7 @@ namespace ClusterMaster3000.classes.helper
 
             ClusterMemberServer clusterMemberServer = new ClusterMemberServer()
             {
-                ServerId = root.GetProperty("server").GetProperty("id").GetInt32(),
+                ServerId = root.GetProperty("server").GetProperty("id").GetInt32().ToString(),
                 ServerName = root.GetProperty("server").GetProperty("name").GetString() ?? "unknown",
                 PublicIpv6 = root.GetProperty("server").GetProperty("public_net").GetProperty("ipv6").GetProperty("ip").GetString() ?? "unknown",
                 Status = root.GetProperty("server").GetProperty("status").GetString() ?? "unknown",

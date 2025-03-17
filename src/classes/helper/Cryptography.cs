@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SshKeyGenerator;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace ClusterMaster3000.classes.helper
 {
@@ -17,6 +18,7 @@ namespace ClusterMaster3000.classes.helper
             public string PublicKey { get; set; }
             public string EncryptedPrivateKey { get; set; }
             public string IV { get; set; }
+            public string KeyName { get; set; }
         }
 
         public struct EncryptedResult
@@ -30,14 +32,18 @@ namespace ClusterMaster3000.classes.helper
             using (var keygen = new SshKeyGenerator.SshKeyGenerator(2048))
             {
                 AppConfiguration config = new AppConfiguration();
+
                 var publicSshKey = keygen.ToRfcPublicKey();
                 var privateSshKey = keygen.ToPrivateKey();
 
                 var encryptionKey = Convert.FromBase64String(config.EncryptionKey ?? throw new KeyNotFoundException("No encryption key found"));
                 var encryptedPrivateSshKey = EncryptText(privateSshKey, encryptionKey);
 
+                var keyName = Guid.NewGuid().ToString();
+
                 var keyPair = new SshKeyPair
                 {
+                    KeyName = keyName,
                     PublicKey = publicSshKey,
                     EncryptedPrivateKey = encryptedPrivateSshKey.EncryptedText,
                     IV = Convert.ToBase64String(encryptedPrivateSshKey.IV)

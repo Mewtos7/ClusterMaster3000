@@ -19,6 +19,7 @@ namespace ClusterMaster3000
             p.InitializeClusterOrchestrator();
             await p.CreateServer();
         }
+
         private void InitializeClusterOrchestrator()
         {
             sqliteDatabase.CreateNewDatabaseIfNotExists();
@@ -36,14 +37,15 @@ namespace ClusterMaster3000
         {
             //Create ssh key and save to db
             var sshKeys = cryptography.GenerateSshKeyPair();
-            var sshKeyId = await hetznerServices.CreatePublicSshKey(sshKeys.PublicKey.ToString());
+            await hetznerServices.CreatePublicSshKey(sshKeys);
             sqliteDatabase.InsertNewSshKeyRecord(sshKeys);
             
 
             //Create server and save to db
-            var createdServerResponse = await hetznerServices.CreateServer(sshKeyId);
+            var createdServerResponse = await hetznerServices.CreateServer(sshKeys.KeyName);
             var mappedClusterMemberServer = jsonMapping.MapServerFieldsToClusterMemberServer(createdServerResponse);
             sqliteDatabase.InsertNewClusterMemberServerRecord(mappedClusterMemberServer);
+            sqliteDatabase.UpdateSshKeyRecord(sshKeys, mappedClusterMemberServer.ServerId);
 
         }
     }
