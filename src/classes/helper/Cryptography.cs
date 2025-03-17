@@ -16,7 +16,7 @@ namespace ClusterMaster3000.classes.helper
         {
             public string PublicKey { get; set; }
             public string EncryptedPrivateKey { get; set; }
-            public byte[] IV { get; set; }
+            public string IV { get; set; }
         }
 
         public struct EncryptedResult
@@ -29,20 +29,18 @@ namespace ClusterMaster3000.classes.helper
         {
             using (var keygen = new SshKeyGenerator.SshKeyGenerator(2048))
             {
-
+                AppConfiguration config = new AppConfiguration();
                 var publicSshKey = keygen.ToRfcPublicKey();
                 var privateSshKey = keygen.ToPrivateKey();
 
-                //temp encryption test
-                var key = CreateEncryptionKey();
-                var encryptedPrivateSshKey = EncryptText(privateSshKey, key);
-                var decryptPrivateSshKey = DecryptText(encryptedPrivateSshKey.EncryptedText, key, encryptedPrivateSshKey.IV);
+                var encryptionKey = Convert.FromBase64String(config.EncryptionKey ?? throw new KeyNotFoundException("No encryption key found"));
+                var encryptedPrivateSshKey = EncryptText(privateSshKey, encryptionKey);
 
                 var keyPair = new SshKeyPair
                 {
                     PublicKey = publicSshKey,
                     EncryptedPrivateKey = encryptedPrivateSshKey.EncryptedText,
-                    IV = encryptedPrivateSshKey.IV
+                    IV = Convert.ToBase64String(encryptedPrivateSshKey.IV)
                 };
 
                 return keyPair;
@@ -75,6 +73,7 @@ namespace ClusterMaster3000.classes.helper
             }
         }
 
+        //TODO: Not used currently
         public string DecryptText(string encryptedText, byte[] key, byte[] iv)
         {
             using (var aes = Aes.Create())

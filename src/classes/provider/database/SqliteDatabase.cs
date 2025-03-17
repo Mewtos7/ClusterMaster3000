@@ -1,6 +1,8 @@
 ﻿// Ignore Spelling: databaseprovider
 
 using System.Data.SQLite;
+using System.Security.Cryptography;
+using ClusterMaster3000.classes.helper;
 using ClusterMaster3000.classes.models;
 
 namespace ClusterMaster3000.classes.provider.database
@@ -10,6 +12,7 @@ namespace ClusterMaster3000.classes.provider.database
         //TODO: Handle Exceptions
         public readonly string databaseName = "clusterMaster3000.db";
         public readonly string clusterMemberTable = "clusterMember";
+        public readonly string sshKeyTable = "sshKeys";
 
         public void CreateNewDatabaseIfNotExists()
         {
@@ -38,7 +41,45 @@ namespace ClusterMaster3000.classes.provider.database
 	                        PublicIpv6 TEXT, 
 	                        Status TEXT NOT NULL, 
 	                        ServerCreatedAt DATETIME NOT NULL, 
-	                        EntryUpdatedAt DATETIME NOT NULL,);";
+	                        EntryUpdatedAt DATETIME NOT NULL);";
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        //TODO: Handle Exceptions
+        public void CreateNewSshKeyTableIfNotExists()
+        {
+            string databasePath = $"Data Source={databaseName}";
+            using (var connection = new SQLiteConnection(databasePath))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText =
+                    $@"CREATE Table IF NOT EXISTS {sshKeyTable} (
+	                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+	                        ServerId TEXT, 
+	                        SshPrivateKey TEXT,
+                            AesIv TEXT);";
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void InsertNewSshKeyRecord(Cryptography.SshKeyPair keyPair)
+        {
+            string databasePath = $"Data Source={databaseName}";
+            using (var connection = new SQLiteConnection(databasePath))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText =
+                    $@"INSERT INTO {sshKeyTable} (SshPrivateKey,AesIv) 
+                        VALUES (@SshPrivateKey, @AesIv);";
+
+                command.Parameters.AddWithValue("@SshPrivateKey", keyPair.EncryptedPrivateKey);
+                command.Parameters.AddWithValue("@AesIv", keyPair.IV);
+
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -55,8 +96,8 @@ namespace ClusterMaster3000.classes.provider.database
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText =
-                    @"INSERT INTO clusterMember (ServerId, ServerName, PublicIpv6, Status, ServerCreatedAt, EntryUpdatedAt) 
-                      VALUES (@ServerId, @ServerName, @PublicIpv6, @Status, @ServerCreatedAt, @EntryUpdatedAt);";
+                    $@"INSERT INTO {clusterMemberTable} (ServerId, ServerName, PublicIpv6, Status, ServerCreatedAt, EntryUpdatedAt) 
+                        VALUES (@ServerId, @ServerName, @PublicIpv6, @Status, @ServerCreatedAt, @EntryUpdatedAt);";
 
                 command.Parameters.AddWithValue("@ServerId", clusterMemberServer.ServerId);
                 command.Parameters.AddWithValue("@ServerName", clusterMemberServer.ServerName);

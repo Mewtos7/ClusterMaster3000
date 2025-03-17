@@ -11,7 +11,7 @@ namespace ClusterMaster3000
         private readonly HetznerServices hetznerServices = new HetznerServices();
         private readonly Cryptography cryptography = new Cryptography();
         private readonly JsonMapping jsonMapping = new JsonMapping();
-        private readonly AppConfiguration appConfiguration = new AppConfiguration();
+        private readonly AppConfiguration appConfiguration = new AppConfiguration(); //TODO: Not optimal here, what is with reloading config when appsetting changes?
 
         static async Task Main(string[] args)
         {
@@ -23,6 +23,7 @@ namespace ClusterMaster3000
         {
             sqliteDatabase.CreateNewDatabaseIfNotExists();
             sqliteDatabase.CreateNewClusterMemberServerTableIfNotExists();
+            sqliteDatabase.CreateNewSshKeyTableIfNotExists();
             if (appConfiguration.EncryptionKey == null)
             {
                 var encryptionKey = cryptography.CreateEncryptionKey();
@@ -33,16 +34,16 @@ namespace ClusterMaster3000
 
         private async Task CreateServer()
         {
-            //Create server and save into database
+            //Create ssh key and save to db
             var sshKeys = cryptography.GenerateSshKeyPair();
             var sshKeyId = await hetznerServices.CreatePublicSshKey(sshKeys.PublicKey.ToString());
+            sqliteDatabase.InsertNewSshKeyRecord(sshKeys);
+            
+
+            //Create server and save to db
             var createdServerResponse = await hetznerServices.CreateServer(sshKeyId);
             var mappedClusterMemberServer = jsonMapping.MapServerFieldsToClusterMemberServer(createdServerResponse);
             sqliteDatabase.InsertNewClusterMemberServerRecord(mappedClusterMemberServer);
-
-            //Clear sensitive data
-            //mappedClusterMemberServer.SshPrivateKey = "";
-            //sshKeys.Clear();
 
         }
     }
