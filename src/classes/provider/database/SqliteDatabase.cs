@@ -38,8 +38,7 @@ namespace ClusterMaster3000.classes.provider.database
 	                        PublicIpv6 TEXT, 
 	                        Status TEXT NOT NULL, 
 	                        ServerCreatedAt DATETIME NOT NULL, 
-	                        EntryUpdatedAt DATETIME NOT NULL,
-                            SshPrivateKey TEXT);";
+	                        EntryUpdatedAt DATETIME NOT NULL,);";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -56,8 +55,8 @@ namespace ClusterMaster3000.classes.provider.database
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText =
-                    @"INSERT INTO clusterMember (ServerId, ServerName, PublicIpv6, Status, ServerCreatedAt, EntryUpdatedAt, SshPrivateKey) 
-                      VALUES (@ServerId, @ServerName, @PublicIpv6, @Status, @ServerCreatedAt, @EntryUpdatedAt, @SshPrivateKey);";
+                    @"INSERT INTO clusterMember (ServerId, ServerName, PublicIpv6, Status, ServerCreatedAt, EntryUpdatedAt) 
+                      VALUES (@ServerId, @ServerName, @PublicIpv6, @Status, @ServerCreatedAt, @EntryUpdatedAt);";
 
                 command.Parameters.AddWithValue("@ServerId", clusterMemberServer.ServerId);
                 command.Parameters.AddWithValue("@ServerName", clusterMemberServer.ServerName);
@@ -65,7 +64,6 @@ namespace ClusterMaster3000.classes.provider.database
                 command.Parameters.AddWithValue("@Status", clusterMemberServer.Status);
                 command.Parameters.AddWithValue("@ServerCreatedAt", clusterMemberServer.CreatedAt);
                 command.Parameters.AddWithValue("@EntryUpdatedAt", EntryUpdatedAt);
-                command.Parameters.AddWithValue("@SshPrivateKey", clusterMemberServer.SshPrivateKey);
 
                 command.ExecuteNonQuery();
                 connection.Close();

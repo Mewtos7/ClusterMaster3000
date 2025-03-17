@@ -66,7 +66,7 @@ namespace ClusterMaster3000.classes.provider.platform
             var message = await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> DepositPublicSshKey(string publicKey)
+        public async Task<string> CreatePublicSshKey(string publicKey)
         {
             var guid = Guid.NewGuid().ToString();
 

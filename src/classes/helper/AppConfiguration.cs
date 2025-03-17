@@ -1,18 +1,32 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Text.Json.Nodes;
+using Microsoft.Extensions.Configuration;
 
 namespace ClusterMaster3000.classes.helper
 {
     class AppConfiguration
     {
         public string HetznerApiKey { get; }
+        public string? EncryptionKey { get; }
 
         public AppConfiguration()
         {
             var configuration = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
             HetznerApiKey = configuration["HETZNERAPIKEY"] ?? throw new KeyNotFoundException("HetznerApiKey not found");
+            EncryptionKey = configuration["ENCRYPTIONKEY"];
+        }
+
+        public void AddConfigurationinJson(string key, string value)
+        {
+            var config = File.ReadAllText("appsettings.json");
+
+            var jsonObj = JsonObject.Parse(config);
+            jsonObj.AsObject().Add(key, value);
+
+            File.WriteAllText("appsettings.json", jsonObj.ToString());
         }
     }
 }

@@ -6,7 +6,7 @@ namespace ClusterMaster3000.classes.helper
 {
     class JsonMapping
     {
-        public ClusterMemberServer MapServerFieldsToClusterMemberServer(string createdServerResponse, string sshPrivateKey)
+        public ClusterMemberServer MapServerFieldsToClusterMemberServer(string createdServerResponse)
         {
             using JsonDocument jsonDocument = JsonDocument.Parse(createdServerResponse);
             JsonElement root = jsonDocument.RootElement;
@@ -17,8 +17,7 @@ namespace ClusterMaster3000.classes.helper
                 ServerName = root.GetProperty("server").GetProperty("name").GetString() ?? "unknown",
                 PublicIpv6 = root.GetProperty("server").GetProperty("public_net").GetProperty("ipv6").GetProperty("ip").GetString() ?? "unknown",
                 Status = root.GetProperty("server").GetProperty("status").GetString() ?? "unknown",
-                CreatedAt = root.GetProperty("server").GetProperty("created").GetDateTimeOffset().UtcDateTime,
-                SshPrivateKey = sshPrivateKey
+                CreatedAt = root.GetProperty("server").GetProperty("created").GetDateTimeOffset().UtcDateTime
             };
             return clusterMemberServer;
         }
