@@ -8,19 +8,21 @@ It should automatically detect high load on affected lxd cluster members (hosts)
 - Platform
 	- Create/Delete Servers with Hetzner API
 	- Create SSHKeys with Hetzner API
+	- Auto-Generate SSH Keys, encrypt wthem and save in database
 - Database
-	- SQLite Database (Not functional at this point)
+	- SQLite Database
+	- Save server information & ssh keyss in SQLite database table
 - App configuration
 	- Configuration file for app settings
 
 ## Roadmap
 - Next
-	- Save server informations in SQLite database table
-	- Auto-Generate SSH Keys and save them in a secure place
+	- Add Unit Tests
+	- Add IHttpClientFactory
 	- Cloud-init: Upgrade server at start, install lxd and create lxd cluster
-- Mid-target
-	- Add cluster member to existent lxd cluster
-- Future
-	- Nothing in mind :)
+	- Add cluster member to existent lxd cluster when creating new server
+	- Add Logging and proper exception handling strategy
 
+## Contribution
+Just ask me, I would be happy for every help.
 

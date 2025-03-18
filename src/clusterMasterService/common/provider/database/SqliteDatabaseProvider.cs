@@ -1,21 +1,15 @@
-﻿// Ignore Spelling: databaseprovider
+﻿using System.Data.SQLite;
+using ClusterMaster3000.clusterMasterService.models;
+using ClusterMaster3000.clusterMasterService.helper;
 
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Security.Cryptography;
-using ClusterMaster3000.classes.helper;
-using ClusterMaster3000.classes.models;
-using Newtonsoft.Json.Linq;
-using static System.Data.Entity.Infrastructure.Design.Executor;
-
-namespace ClusterMaster3000.classes.provider.database
+namespace ClusterMaster3000.clusterMasterService.common.provider.database
 {
-    class SqliteDatabase
+    class SqliteDatabaseProvider
     {
         //TODO: Handle Exceptions
-        public readonly string databaseName = "clusterMaster3000.db";
-        public readonly string clusterMemberTable = "clusterMember";
-        public readonly string sshKeyTable = "sshKeys";
+        private readonly string databaseName = "clusterMaster3000.db";
+        private readonly string clusterMemberTable = "clusterMember";
+        private readonly string sshKeyTable = "sshKeys";
 
         public void CreateNewDatabaseIfNotExists()
         {

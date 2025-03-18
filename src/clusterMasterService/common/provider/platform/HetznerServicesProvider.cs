@@ -1,20 +1,17 @@
-﻿using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using ClusterMaster3000.classes.helper;
+using ClusterMaster3000.clusterMasterService.helper;
 
 namespace ClusterMaster3000.classes.provider.platform
 {
-    class HetznerServices
+    class HetznerServicesProvider
     {
         private readonly HttpClient httpClient = new HttpClient();
         private readonly AppConfiguration config = new AppConfiguration();
 
-        public HetznerServices()
+        public HetznerServicesProvider()
         {
-            var apiKey = config.HetznerApiKey;
+            var apiKey = config.HetznerApiKey ?? throw new KeyNotFoundException("API Key not set!");
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
         }
 
