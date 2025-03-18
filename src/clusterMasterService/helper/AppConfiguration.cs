@@ -5,7 +5,7 @@ namespace ClusterMaster3000.clusterMasterService.helper
 {
     class AppConfiguration
     {
-        public string HetznerApiKey { get; }
+        public string? HetznerApiKey { get; }
         public string? EncryptionKey { get; }
 
         public AppConfiguration()
@@ -15,7 +15,7 @@ namespace ClusterMaster3000.clusterMasterService.helper
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            HetznerApiKey = configuration["HETZNERAPIKEY"] ?? throw new KeyNotFoundException("HetznerApiKey not found");
+            HetznerApiKey = configuration["HETZNERAPIKEY"];
             EncryptionKey = configuration["ENCRYPTIONKEY"];
         }
 

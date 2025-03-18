@@ -5,6 +5,11 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterMaster3000", "src\ClusterMaster3000.csproj", "{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterMaster3000Tests", "tests\ClusterMaster3000Tests\ClusterMaster3000Tests.csproj", "{8D351CE7-E23C-42C5-9632-54C0FC1E64C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2} = {7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B37625D-E287-4B2C-8F8A-7FCE3E45D6C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D351CE7-E23C-42C5-9632-54C0FC1E64C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D351CE7-E23C-42C5-9632-54C0FC1E64C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D351CE7-E23C-42C5-9632-54C0FC1E64C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D351CE7-E23C-42C5-9632-54C0FC1E64C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
