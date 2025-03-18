@@ -4,9 +4,10 @@ using ClusterMaster3000.clusterMasterService.helper;
 
 namespace ClusterMaster3000.clusterMasterService.common.provider.database
 {
-    class SqliteDatabaseProvider
+    public class SqliteDatabaseProvider
     {
         //TODO: Handle Exceptions
+        //TODO: Better using variables database and table names to decouple from the implementation
         private readonly string databaseName = "clusterMaster3000.db";
         private readonly string clusterMemberTable = "clusterMember";
         private readonly string sshKeyTable = "sshKeys";

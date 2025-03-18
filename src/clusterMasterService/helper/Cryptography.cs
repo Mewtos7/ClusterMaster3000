@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ClusterMaster3000.clusterMasterService.helper
 {
-    class Cryptography
+    public class Cryptography
     {
         public struct SshKeyPair
         {

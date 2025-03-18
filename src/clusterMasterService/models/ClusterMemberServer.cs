@@ -2,7 +2,7 @@
 namespace ClusterMaster3000.clusterMasterService.models
 {
     //TODO: Check when and which method should update UpdatedAt
-    class ClusterMemberServer
+    public class ClusterMemberServer
     {
         public required string ServerId { get; set; }
         public required string ServerName { get; set; }
