@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
 
-namespace ClusterMaster3000.classes.helper
+namespace ClusterMaster3000.clusterMasterService.helper
 {
     class AppConfiguration
     {
@@ -19,7 +19,7 @@ namespace ClusterMaster3000.classes.helper
             EncryptionKey = configuration["ENCRYPTIONKEY"];
         }
 
-        public void AddConfigurationinJson(string key, string value)
+        public void AddConfigurationInJson(string key, string value)
         {
             var config = File.ReadAllText("appsettings.json");
 

@@ -1,8 +1,5 @@
-﻿// Ignore Spelling: Ipv
-
-using System.Security;
-
-namespace ClusterMaster3000.classes.models
+﻿
+namespace ClusterMaster3000.clusterMasterService.models
 {
     //TODO: Check when and which method should update UpdatedAt
     class ClusterMemberServer

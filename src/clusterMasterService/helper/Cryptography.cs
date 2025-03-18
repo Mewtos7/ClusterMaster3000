@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Security;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using SshKeyGenerator;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
-namespace ClusterMaster3000.classes.helper
+namespace ClusterMaster3000.clusterMasterService.helper
 {
     class Cryptography
     {
@@ -27,20 +19,19 @@ namespace ClusterMaster3000.classes.helper
             public byte[] IV { get; set; }
         }
 
+        //TODO: AppConfiguration should be somehow injected
         public SshKeyPair GenerateSshKeyPair()
         {
             using (var keygen = new SshKeyGenerator.SshKeyGenerator(2048))
             {
                 AppConfiguration config = new AppConfiguration();
+                var encryptionKey = Convert.FromBase64String(config.EncryptionKey ?? throw new KeyNotFoundException("No encryption key found"));
 
                 var publicSshKey = keygen.ToRfcPublicKey();
                 var privateSshKey = keygen.ToPrivateKey();
-
-                var encryptionKey = Convert.FromBase64String(config.EncryptionKey ?? throw new KeyNotFoundException("No encryption key found"));
+               
                 var encryptedPrivateSshKey = EncryptText(privateSshKey, encryptionKey);
-
                 var keyName = Guid.NewGuid().ToString();
-
                 var keyPair = new SshKeyPair
                 {
                     KeyName = keyName,
@@ -48,7 +39,6 @@ namespace ClusterMaster3000.classes.helper
                     EncryptedPrivateKey = encryptedPrivateSshKey.EncryptedText,
                     IV = Convert.ToBase64String(encryptedPrivateSshKey.IV)
                 };
-
                 return keyPair;
             }
         }
@@ -99,7 +89,7 @@ namespace ClusterMaster3000.classes.helper
             }
         }
 
-        public byte[] CreateEncryptionKey()
+        public static byte[] CreateEncryptionKey()
         {
             var guid = Guid.NewGuid().ToString();
             var key = SHA256.HashData(Encoding.UTF8.GetBytes(guid));

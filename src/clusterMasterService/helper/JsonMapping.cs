@@ -1,12 +1,12 @@
 ﻿using System.Security;
 using System.Text.Json;
-using ClusterMaster3000.classes.models;
+using ClusterMaster3000.clusterMasterService.models;
 
-namespace ClusterMaster3000.classes.helper
+namespace ClusterMaster3000.clusterMasterService.helper
 {
     class JsonMapping
     {
-        public ClusterMemberServer MapServerFieldsToClusterMemberServer(string createdServerResponse)
+        public static ClusterMemberServer MapServerFieldsToClusterMemberServer(string createdServerResponse)
         {
             using JsonDocument jsonDocument = JsonDocument.Parse(createdServerResponse);
             JsonElement root = jsonDocument.RootElement;
