@@ -6,6 +6,8 @@ using ClusterMaster3000.clusterMasterService.models;
 
 namespace ClusterMaster3000Tests
 {
+    //TODO: Add static database file to use for update and insert records, as well as for insert tables to ensure really only testing 
+    //single unit
     public class SqliteDatabaseProviderTests
     {
         [Fact]
@@ -67,6 +69,7 @@ namespace ClusterMaster3000Tests
             // Arrange
             var databaseProvider = new SqliteDatabaseProvider();
             databaseProvider.CreateNewDatabaseIfNotExists();
+            databaseProvider.CreateNewSshKeyTableIfNotExists();
             var sshPrivateKey = "TEST";
             var keyName = "testKey";
             var keyPair = new Cryptography.SshKeyPair
@@ -95,6 +98,7 @@ namespace ClusterMaster3000Tests
             // Arrange
             var databaseProvider = new SqliteDatabaseProvider();
             databaseProvider.CreateNewDatabaseIfNotExists();
+            databaseProvider.CreateNewClusterMemberServerTableIfNotExists();
             var serverName = "test";
             var serverId = "10000";
             var clusterMember = new ClusterMemberServer
@@ -124,6 +128,8 @@ namespace ClusterMaster3000Tests
             // Arrange
             var databaseProvider = new SqliteDatabaseProvider();
             databaseProvider.CreateNewDatabaseIfNotExists();
+            databaseProvider.CreateNewSshKeyTableIfNotExists();
+
             var sshPrivateKey = "TEST";
             
             var keyName = "testKey";
@@ -134,10 +140,12 @@ namespace ClusterMaster3000Tests
                 IV = "123445",
                 KeyName = keyName
             };
+            databaseProvider.InsertNewSshKeyRecord(keyPair);
 
             var serverId = "10000";
 
             // Act
+            
             databaseProvider.UpdateSshKeyRecord(keyPair, serverId);
             var connection = new SQLiteConnection($"Data Source=clusterMaster3000.db");
             connection.Open();
